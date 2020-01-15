@@ -14,3 +14,18 @@ y = np.random.normal(beta1 * x1 + beta2 * x2 + beta0)
 
 
 # %%
+with pymc.Model() as model:
+    b0 =pymc.Normal('beta_0', mu=0, sd=100.)
+    b1 =pymc.Normal('beta_1', mu=0, sd=100.)
+    b2 =pymc.Normal('beta_2', mu=0, sd=100.)
+    error =pymc.Normal('epsilon', mu=0, sd=100.)
+
+    y_out = b0 + b1*x1 + b2*x2 
+    y_var = pymc.Normal('y', mu=y_out, sd=error, observed=y)
+
+# %%
+with model:
+    trace = pymc.sample(3000)
+
+# %%
+pymc.traceplot(trace)
